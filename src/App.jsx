@@ -6,7 +6,29 @@ import { SignupImage } from "./components/signup-image";
 
 function App() {
   const formId = useId();
-  const [mouseHover, setMouseHover] = useState(false);
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [mouseHover, setMouseHover] = useState(false)
+
+  const regexEmail = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+
+  const errorClass = error ? "error" : ""
+
+  const handleOnChange = (evt) => {
+    setEmail(evt.target.value);
+  }
+
+  const handleOnSubmit = (evt) => {
+    evt.preventDefault();
+
+    if (!regexEmail.test(email)) {
+      setError("Valid email requeried");
+      return
+    }
+    setError("")
+    setEmail("")
+    return
+  }
 
   const handleMouseEnter = () => setMouseHover(true);
   const handleMouseLeave = () => setMouseHover(false);
@@ -37,16 +59,22 @@ function App() {
               </ul>
             </div>
 
-            <form className="form">
+            <form className="form" onSubmit={handleOnSubmit}>
               <div className="label-input">
-                <div>
+                <div className="label-error">
                   <label htmlFor={formId}>Email address</label>
-                  <span>Valid email requeried</span>
+                  {error && <span>Valid email requeried</span>}
                 </div>
+
                 <input
                   id={formId}
-                  type="email"
+                  type="text"
                   placeholder="email@company.com"
+                  name="email"
+                  value={email}
+                  required
+                  onChange={handleOnChange}
+                  className={`input ${errorClass}`}
                 />
               </div>
               <button onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>Subscribe to monthly newsletter</button>
